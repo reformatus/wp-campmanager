@@ -17,9 +17,9 @@ removed here.
 | Registration flow when an account is involved (inline or before the form); minimum age for holding an account | building the portal and registration UI |
 | Retention of guest data and of the audit, including failed entries | before the first production deployment (privacy policy) |
 | The list of per-event actions and their default bundles | before the admin UI |
-| Which money plugins come first (the price ladder is needed for IVK) | product scope with stakeholders, before the first season on Kaláka |
+| Which money plugins come first for REFISZ's summer camps (IVK's and Téli Tali's are in the [release plan](release-plan.md)) | before the summer camps' registration opens |
 | The payment deadline of a registration admitted from the waitlist | with the payment-due date types |
-| The wallet: separate from the fee (a top-up never pays it, a fee debt never enters the wallet); one per registration; no spending below the balance; top-ups by card or cash at the buffet; carry-over between events of the organization for every payer; moving overpayments into wallets in one click; settlement thresholds per event; what the participant sees | by early February 2027 |
+| The wallet: separate from the fee (a top-up never pays it, a fee debt never enters the wallet); one per registration; no spending below the balance; top-ups by card or cash at the buffet; carry-over between events of the organization for every payer; moving overpayments into wallets in one click; settlement thresholds per event; what the participant sees | designed in December 2026, built before Téli Tali (2027-02-03, [Release plan](release-plan.md)) |
 | Reserved places per partner, e.g. as a per-link quota | after IVK registration opens |
 | IVK's staff and volunteer data form, for staff who are not participants (REFISZ's staff additional form stays as described in Events and forms) | after IVK registration opens |
 | One mailbox per responsibility (finance, invoicing, contact, leadership) | the mail topic |
@@ -29,13 +29,13 @@ removed here.
 | Portable event definitions: an event serializable with everything that belongs to it | later |
 | AI help for building an event's configuration (e.g. an MCP server) | later |
 | Where extensions register REST routes | the first extension that needs one |
-| Manual requeue of action mails that should have been sent | after the first version |
 | Year-to-year tracking add-on, built from preset links | later |
 | Public after-save actions for third parties | when a third party needs them; at the earliest when alpha ends |
 | Deprecation period for versioned extension points; the compatibility-check tool | when the alpha phase ends |
 | The license and its `LICENSE` file | when the alpha phase ends (wide release to other organizations) |
 | Spam protection, including a rate limit on the module recommender | before IVK registration opens (2026-11-30) |
 | File upload | building forms |
+| Rounding payment requests to the currency's payable unit (whole forints for HUF, below one fillér counts as zero): follow WooCommerce's own method if it has one | at implementation |
 | Rate limit for self-sent mail | building the portal |
 | Post-camp settlement extension | later |
 | A view of the frozen submission | later, low priority |
