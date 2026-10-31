@@ -146,11 +146,18 @@ Besides the money plugins:
       public function id(): string;                        // [a-z][a-z0-9_]*
       public function requiresApi(): string;               // e.g. '>=0.1 <0.2'
       public function schema(): Schema;                    // Schema::none() without tables
-      public function capabilities(): array;               // list<string>
+      public function capabilities(): array;               // list<string>, per-event actions
       public function contribute(Contributions $to): void; // typed extension points
       public function boot(): void;                        // add_action etc.
   }
   ```
+
+  `capabilities()` names the per-event actions the module offers (e.g.
+  `kalaka_withdraw_registration`). Core collects them into one catalogue that
+  grants pick from ([Foundation](foundation.md#views-and-grants)); they are
+  not WordPress capabilities and are never added to roles. Only the
+  full-access capability and the minimal role for outside grantees touch
+  WordPress roles, and both belong to Admin.
 
   `AbstractModule` gives the defaults (no schema, capabilities or
   contributions). Each module's class is `<Module>\Module`, in `Module.php`
@@ -173,7 +180,7 @@ Besides the money plugins:
   another request is not booted in this one. An extension plugin's main file:
 
   ```php
-  add_action('kalaka_register_modules', static function (Kalaka\Foundation\Api\Modules $modules): void {
+  add_action('kalaka_register_modules', static function (Kalaka\Foundation\Api\Module\Modules $modules): void {
       $modules->add(new Kalaka\WooCommerce\Module());
   });
   ```
@@ -196,6 +203,10 @@ Besides the money plugins:
 - **Upgrade steps are safe to rerun.** MariaDB commits automatically after
   every schema change, so an upgrade cannot be rolled back; the schema
   version advances one step at a time.
+- **An upgrade fails rather than advance the version** when the tables do not
+  match their definitions: `dbDelta` reports no errors, so the upgrader runs
+  it again as a dry run, and any change still pending is a failure. Table
+  definitions are therefore written in `dbDelta`'s own format.
 - **A failed upgrade:**
   - an extension module stays unbooted, and admins get a notice with a retry;
   - a core module puts core in a **safe mode**: public forms and the portal
@@ -332,12 +343,16 @@ deprecation period and the compatibility-check tool are chosen then.
 - A contribution **inside** the transaction that throws rolls back the use
   case like any error.
 - **If anything fails to load** (an extension out of range or unbooted, a
-  missing field type, a failed upgrade), **every event is treated as
+  missing field type, a failed upgrade, an exception thrown while extensions
+  register), **every event is treated as
   unpublished**: all public access is refused and mail decisions and sending
   stop ([Events](events-and-forms.md#event-lifecycle)). There is no
   per-event dependency analysis: at our scale stopping everything is simple
   and clear. The stored event states do not change, so events come back once
-  the problem is fixed.
+  the problem is fixed. The boot records the outcome in
+  `Kalaka\Foundation\Api\LoadState`; `isOpen()` is false after any load
+  failure and before boot has finished, and every public entry point checks
+  it.
 
 ### After-save actions
 
